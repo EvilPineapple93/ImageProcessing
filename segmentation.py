@@ -21,18 +21,17 @@ def plotME(strokeList):
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 pre  = (root.tag).rstrip('ink')
-print(pre)
+
 strokeList = []
 for stroke in root.findall(pre+'trace'):
-        print(stroke.get('id'), stroke.text)
-        coords = stroke.text.split(', ');
-        npCoords = []
-        for element in coords:
-            x,y = element.split(' ')
-            npCoords.append([float(x), float(y)])
+    coords = stroke.text.split(', ');
+    npCoords = []
+    for element in coords:
+        x,y = element.split(' ')
+        npCoords.append([float(x), float(y)])
 
-        npCoords = np.asarray(npCoords)
-        strokeList.append(npCoords)
+    npCoords = np.asarray(npCoords)
+    strokeList.append(npCoords)
 
-print(strokeList)
+#print(strokeList)
 plotME(strokeList)

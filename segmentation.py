@@ -37,6 +37,6 @@ for stroke in root.findall(pre+'trace'):
 plotME(strokeList)
 
 
+
 #fuck
 
-kasjhdkasjdnaksdnajksdhaksdhaskdhajksdhaksjdhasjkdh

@@ -4,21 +4,14 @@ import numpy as np
 import scipy.spatial as sp 
 import matplotlib.pyplot as plt
 
-def findXtrema(strokeList):
-    xmin = min(np.amin(stroke[:,0]) for stroke in strokeList)
-    xmax = max(np.amax(stroke[:,0]) for stroke in strokeList)
-    ymin = min(np.amin(stroke[:,1]) for stroke in strokeList)
-    ymax = max(np.amax(stroke[:,1]) for stroke in strokeList)
-    return [xmin, xmax],[-ymax,-ymin]
-
+# Plots mathematical expression, given list of strokes 
 def plotME(strokeList):
     for stroke in strokeList:
         plt.plot(stroke[:,0],-stroke[:,1], 'k')
-    xlims,ylims = findXtrema(strokeList)
     plt.axes().set_aspect('equal')
     plt.show()
 
-	
+# Calculates minimum distance between two given strokes
 def minDist(stroke1, stroke2):
 	dmin = sp.distance.pdist([stroke1[0],stroke2[0]], 'euclidean')
 	for p1 in stroke1:
@@ -29,21 +22,22 @@ def minDist(stroke1, stroke2):
 	return dmin
 
 
-	
+# Determine xml prefix to be removed when parsing data
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 pre  = (root.tag).rstrip('ink')
 
+# Parse xml data into a list of strokes
 strokeList = []
 for stroke in root.findall(pre+'trace'):
     coords = stroke.text.split(', ');
     npCoords = []
+	# Convert pair of float strings into tuplet of floats
     for element in coords:
         x,y = element.split(' ')
         npCoords.append([float(x), float(y)])
-
+	# Convert coordinate list into Nx2 numpy matrix
     npCoords = np.asarray(npCoords)
     strokeList.append(npCoords)
 
-#print(strokeList)
 plotME(strokeList)

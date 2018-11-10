@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import sys
 import numpy as np
+import scipy.spatial as sp 
 import matplotlib.pyplot as plt
 
 def findXtrema(strokeList):
@@ -17,7 +18,18 @@ def plotME(strokeList):
     plt.axes().set_aspect('equal')
     plt.show()
 
+	
+def minDist(stroke1, stroke2):
+	dmin = sp.distance.pdist([stroke1[0],stroke2[0]], 'euclidean')
+	for p1 in stroke1:
+		for p2 in stroke2:
+			tmp = sp.distance.pdist([stroke1[0],stroke2[0]], 'euclidean')
+			if tmp < dmin:
+				dmin = tmp
+	return dmin
 
+
+	
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 pre  = (root.tag).rstrip('ink')

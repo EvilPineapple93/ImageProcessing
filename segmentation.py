@@ -16,7 +16,7 @@ def plotME(strokeList):
     xlims,ylims = findXtrema(strokeList)
     plt.axes().set_aspect('equal')
     plt.show()
-#test
+
 
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()

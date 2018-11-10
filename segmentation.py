@@ -35,10 +35,3 @@ for stroke in root.findall(pre+'trace'):
 
 #print(strokeList)
 plotME(strokeList)
-
-
-
-#fuck
-
-lskdjasldajsdalskjdaskldjalksdjaskldla
-kasjhdkasjdnaksdnajksdhaksdhaskdhajksdhaksjdhasjkdh

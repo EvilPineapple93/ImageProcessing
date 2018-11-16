@@ -100,6 +100,8 @@ def strokeU(s1, s2):
         d = 0
     elif (edP < mdP and edP < ov and edP < sdP):
         c = 0
+    if edP == 0:
+        c = 0
     strokeUnity = (a*mdP + b*ov + c*edP + d*sdP)/(a+b+c+d)
     print(strokeUnity)
     return strokeUnity

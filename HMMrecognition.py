@@ -6,7 +6,11 @@ from hmmlearn import hmm
 
     
 
+strokeList = np.load("strokeList.npy")
+print(strokeList)
 
+strokeList = np.load("unityList.npy")
+print(strokeList)
 
 
 
@@ -26,8 +30,3 @@ model.fit(X)
 
 
 
-strokeList = np.load("strokeList.npy")
-print(strokeList)
-
-strokeList = np.load("unityList.npy")
-print(strokeList)

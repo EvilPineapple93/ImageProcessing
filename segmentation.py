@@ -105,6 +105,18 @@ def strokeU(s1, s2):
     strokeUnity = (a*mdP + b*ov + c*edP + d*sdP)/(a+b+c+d)
     print(strokeUnity)
     return strokeUnity
+	
+def dataExport(strokeList):
+	outFile = open("segmentExportData.txt","w+")
+	for e in strokeList:
+		outFile.write("%s\r\n" % str(e))
+	outFile.write("*")
+	for i in range(1, len(strokeList)):
+		s1 = strokeList[i-1]
+		s2 = strokeList[i]
+		outFile.write(str(strokeU(s1,s2)))
+	outFile.close()
+	
 
 # Determine xml prefix to be removed when parsing data
 tree = ET.parse(sys.argv[1])
@@ -129,6 +141,9 @@ print(avgL)
 for i in range(1, len(strokeList)):
     s1 = strokeList[i-1]
     s2 = strokeList[i]
-input('Display? (y/n)')
 
-plotME(strokeList)
+x = input('Display? (y/n)')
+if x == 'y':
+	plotME(strokeList)
+
+dataExport(strokeList)

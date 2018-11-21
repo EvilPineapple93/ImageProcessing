@@ -146,4 +146,12 @@ x = input('Display? (y/n)')
 if x == 'y':
 	plotME(strokeList)
 
-dataExport(strokeList)
+np.save("strokeList",np.asarray(strokeList))
+
+unityList = []
+for i in range(1, len(strokeList)):
+		s1 = strokeList[i-1]
+		s2 = strokeList[i]
+		unityList.append(strokeU(s1,s2))
+
+np.save("unityList",np.asarray(unityList))

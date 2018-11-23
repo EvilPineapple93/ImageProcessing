@@ -9,7 +9,7 @@ symbolList = np.load(sys.argv[1])
 # Create folder if not already created 
 root = sys.argv[1].rstrip('.npy')
 if not os.path.exists(root):
-    os.makedir(root)
+    os.makedirs(root)
 
 for i in range(len(symbolList)):
 	
@@ -32,7 +32,7 @@ for i in range(len(symbolList)):
 	for stroke in symbol:
 		pts = stroke.astype(np.int32)
 		pts = pts.reshape((-1,1,2))
-		img = cv2.polylines(img, [pts], False,(0,0,0),5) 
+		img = cv2.polylines(img, [pts], False,(0,0,0),4) 
 	
 	# Write to png file, will overwrite if file exists
 	cv2.imwrite(root+'\symbol_%03d.png' % i,img)

@@ -10,19 +10,13 @@ from hmmlearn import hmm
 from PIL import Image
 from sklearn.externals import joblib
 
-strokeList = np.load("strokeList.npy")
-unityList = np.load("unityList.npy")
-for i in range(0, len(strokeList)):
-    strokeList[i][:,0] = strokeList[i][:,0] - np.min(strokeList[i][:,0])
-    strokeList[i][:,1] = strokeList[i][:,1] - np.min(strokeList[i][:,1])
+dir_path = os.path.dirname(os.path.realpath('../Zeros/train_30_30047.png'))
 
 Zeros = np.empty((1,32**2))
-dir_path = os.path.dirname(os.path.realpath('../Zeros/train_30_30047.png'))
-n =0
+n = 0
 for filename in os.listdir('../Zeros/'):
     filename = dir_path + str("/"+filename)
     image = mpimg.imread(filename)
-    #img = tf.image.decode_png(tf.read_file(filename))
     image = Image.open(filename).convert('L')
     basewidth = 32
     wpercent = (basewidth/float(image.size[0]))

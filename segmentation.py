@@ -143,18 +143,22 @@ def horzStd(stroke):
     return math.sqrt(xstd/len(stroke))
 
 def complexity(stroke, avgL):
-    c = angleAlt(stroke)*5
+    c = angleAlt(stroke)*2
     m = length(stroke)/avgL*0.5
-    d = min(horzStd(stroke), vertStd(stroke))/0.01
-    c = c*m*d
-    if c >= 50:
-        print('c: ', c)
+    d = min(horzStd(stroke), vertStd(stroke))
+    if d < 0.005:
+        c = c*m*d/0.01
+    else:
+        c = c*m
+
+    if c >= 30:
+        #print('c: ', c)
         return 'c'
-    elif c >= 15:
-        print('s: ', c)
+    elif c >= 5:
+        #print('s: ', c)
         return 's'
     else:
-        print('p: ', c)
+        #print('p: ', c)
         return 'p'
 
 def dataExport(strokeList):
@@ -190,7 +194,7 @@ for stroke in root.findall(pre+'trace'):
 avgL = avgSLength(strokeList)
 for s in strokeList:
     complexity(s, avgL)
-    print('angleAlt: ', angleAlt(s), 'length: ', length(s), 'std: ', min(horzStd(s), vertStd(s)))
+#    print('angleAlt: ', angleAlt(s), 'length: ', length(s), 'std: ', min(horzStd(s), vertStd(s)))
 
 for i in range(1, len(strokeList)):
     s1 = strokeList[i-1]
@@ -200,12 +204,108 @@ x = input('Display? (y/n)')
 if x == 'y':
 	plotME(strokeList)
 
-np.save("strokeList",np.asarray(strokeList))
+groups = []
+i = 3
+j = 0
+while j < len(strokeList):
+    flag  = True
+    f2    = True
+    f3    = True
+    if len(strokeList)-j >= 4:
+        s1    = strokeList[i-3]
+        s2    = strokeList[i-2]
+        s3    = strokeList[i-1]
+        s4    = strokeList[i]
+        c1    = complexity(s1, avgL)
+        c2    = complexity(s2, avgL)
+        c3    = complexity(s3, avgL)
+        c4    = complexity(s4,   avgL)
+    elif len(strokeList)-j >= 3:
+        s1    = strokeList[i-3]
+        s2    = strokeList[i-2]
+        s3    = strokeList[i-1]
+        c1    = complexity(s1, avgL)
+        c2    = complexity(s2, avgL)
+        c3    = complexity(s3, avgL)
+        c4    = 'x'
+        f3    = False
+    elif len(strokeList)-j >= 2:
+        s1    = strokeList[i-3]
+        s2    = strokeList[i-2]
+        c1    = complexity(s1, avgL)
+        c2    = complexity(s2, avgL)
+        c3    = 'x'
+        f2    = False
+    else:
+        s1    = strokeList[i-3]
+        group = [s1]
+        groups.append(group)
+        flag = False
 
-unityList = []
-for i in range(1, len(strokeList)):
-		s1 = strokeList[i-1]
-		s2 = strokeList[i]
-		unityList.append(strokeU(s1,s2))
 
-np.save("unityList",np.asarray(unityList))
+    group = [s1]
+    if c1 == 'c' and c2 == 'c' and flag:
+        groups.append(group)
+        flag = False
+
+    s = 1
+    #if c1 == 'c':
+        #s = 0.95
+    #elif c1 == 'p':
+        #s = 1.05
+
+    m = 1
+    #if c2 == 'c':
+        #m = s*0.95
+    #elif c2 == 'p':
+        #m = s*1.05
+
+    if flag:
+        s12 = m*strokeU(s1, s2)
+        if s12 >= 0.5:
+            group.append(s2)
+        else:
+            groups.append(group)
+            flag = False
+
+        if f2 and ((c1 == 'c' or c2 == 'c') and c3 == 'c') and flag:
+            groups.append(group)
+            flag = False
+
+        #if c3 == 'c':
+         #   m = s*0.95
+        #elif c3 == 'p':
+          #  m = s*1.05
+
+        if f2 and flag:
+            s13 = m*strokeU(s1, s3)
+            if s13 >= 0.55:
+                group.append(s3)
+            else:
+                groups.append(group)
+                flag = False
+
+            if f3 and ((c1 == 'c' or c2 == 'c' or c3 == 'c') and c4 == 'c') and flag:
+                groups.append(group)
+                flag = False
+
+            #if c4 == 'c':
+            #    m = s*0.95
+            #elif c4 == 'p':
+             #   m = s*1.05
+
+            if f3 and flag:
+                s14 = m*strokeU(s1, s4)
+                if s14 >= 0.6:
+                    group.append(s4)
+                else:
+                    groups.append(group)
+                    flag = False
+
+                if flag:
+                    groups.append(group)
+
+    i = i + len(group)
+    j = j + len(group)
+
+np.save("symbolList",np.asarray(groups))

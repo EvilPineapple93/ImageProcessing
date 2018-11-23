@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import sys
+import math
 import numpy as np
 import scipy.spatial as sp 
 import matplotlib.pyplot as plt
@@ -103,9 +104,59 @@ def strokeU(s1, s2):
     if edP == 0:
         c = 0
     strokeUnity = (a*mdP + b*ov + c*edP + d*sdP)/(a+b+c+d)
-    print(strokeUnity)
     return strokeUnity
-	
+
+def angleAlt(stroke):
+    alt = 0
+    cnt = 0
+    for i in range(2, len(stroke)):
+        x3  = stroke[i][0]
+        y3  = stroke[i][1]
+        x2  = stroke[i-1][0]
+        y2  = stroke[i-1][1]
+        x1  = stroke[i-2][0]
+        y1  = stroke[i-2][1]
+        dif = abs(math.atan2((y3-y2),(x3-x2)) - math.atan2((y2-y1),(x2-x1)))
+        if dif >= 0.15:
+            alt = alt + dif
+            cnt = cnt + 1
+    return cnt
+
+def vertStd(stroke):
+    yavg = 0
+    for p in stroke:
+        yavg = yavg + p[1]
+    yavg = yavg/len(stroke)
+    ystd = 0
+    for p in stroke:
+        ystd = ystd + (p[1]-yavg)**2
+    return math.sqrt(ystd/len(stroke))
+
+def horzStd(stroke):
+    xavg = 0
+    for p in stroke:
+        xavg = xavg + p[1]
+    xavg = xavg/len(stroke)
+    xstd = 0
+    for p in stroke:
+        xstd = xstd + (p[1]-xavg)**2
+    return math.sqrt(xstd/len(stroke))
+
+def complexity(stroke, avgL):
+    c = angleAlt(stroke)*5
+    m = length(stroke)/avgL*0.5
+    d = min(horzStd(stroke), vertStd(stroke))/0.01
+    c = c*m*d
+    if c >= 50:
+        print('c: ', c)
+        return 'c'
+    elif c >= 15:
+        print('s: ', c)
+        return 's'
+    else:
+        print('p: ', c)
+        return 'p'
+
 def dataExport(strokeList):
 	outFile = open("segmentExportData.txt","w+")
 	for e in strokeList:
@@ -137,7 +188,10 @@ for stroke in root.findall(pre+'trace'):
     strokeList.append(npCoords)
 
 avgL = avgSLength(strokeList)
-print(avgL)
+for s in strokeList:
+    complexity(s, avgL)
+    print('angleAlt: ', angleAlt(s), 'length: ', length(s), 'std: ', min(horzStd(s), vertStd(s)))
+
 for i in range(1, len(strokeList)):
     s1 = strokeList[i-1]
     s2 = strokeList[i]

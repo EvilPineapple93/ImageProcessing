@@ -8,7 +8,6 @@ strokeList = np.load("strokeList.npy")
 unityList = np.load("unityList.npy")
 
 
-
 X = np.concatenate([observations, results])
 lengths = [len(obserations), len(results)]
 

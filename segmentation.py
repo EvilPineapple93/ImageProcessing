@@ -178,6 +178,23 @@ tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 pre  = (root.tag).rstrip('ink')
 
+# Strip file number from file name
+def nstrip(filename):
+    num = []
+    i = 1
+    fname = filename
+    c = filename[-i]
+    while c.isdigit():
+        fname = fname.rstrip(c)
+        num.append(c)
+        i = i + 1
+        c = filename[-i]
+    num = num[::-1]
+    num = int(''.join(str(d) for d in num))
+    suf = str(num).zfill(3)
+    return fname + suf
+
+
 # Parse xml data into a list of strokes
 strokeList = []
 for stroke in root.findall(pre+'trace'):
@@ -307,5 +324,5 @@ while j < len(strokeList):
 
     i = i + len(group)
     j = j + len(group)
-
-np.save("symbolList",np.asarray(groups))
+equation = sys.argv[1].rstrip('.inkml')
+np.save(nstrip(equation),np.asarray(groups))
